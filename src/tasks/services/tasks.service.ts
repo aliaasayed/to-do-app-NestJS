@@ -72,7 +72,7 @@ export class TasksService {
             throw new NotFoundException('Could not find Task.');
         } else {
             return {
-                message: 'Task deleted sucssefully'
+                message: 'Task deleted successfully'
             }
         }
     }
