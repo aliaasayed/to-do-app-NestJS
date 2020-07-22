@@ -1,13 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { TaskDbModel } from '../model/tasks.dbModel';
+import { TaskRepository } from '../repository/tasks.repository';
 
 @Injectable()
 export class TasksService {
-    constructor(private task: TaskDbModel
-    ) { }
+    constructor(private taskRepository: TaskRepository) { }
 
     async create(user, body: any) {
-        const result = await this.task.create({
+        const result = await this.taskRepository.create({
             title: body.title,
             description: body.description,
             userId: user.userId
@@ -25,7 +24,7 @@ export class TasksService {
         if (query.description)
             searchQuery.description = { $regex: `${query.description}`, $options: 'i' };
 
-        const tasks = await this.task.findAll(searchQuery);
+        const tasks = await this.taskRepository.findAll(searchQuery);
         return tasks.map(task => ({
             id: task.id,
             title: task.title,
@@ -34,7 +33,7 @@ export class TasksService {
     }
 
     async getTask(user, taskId: string) {
-        const task = await this.task.findOne({
+        const task = await this.taskRepository.findOne({
             userId: user.userId, _id: taskId
         });
         if (!task) {
@@ -52,7 +51,7 @@ export class TasksService {
         taskId: string,
         body: any
     ) {
-        const updatedTask = await this.task.update(
+        const updatedTask = await this.taskRepository.update(
             { userId: user.userId, _id: taskId },
             body);
 
@@ -61,13 +60,13 @@ export class TasksService {
         }
         else {
             return {
-                message: 'Task updated sucessfully.'
+                message: 'Task updated successfully.'
             }
         }
     }
 
     async deleteTask(user, taskId: string) {
-        const result = await this.task.delete({ _id: taskId, userId: user.userId });
+        const result = await this.taskRepository.delete({ _id: taskId, userId: user.userId });
         if (result.n === 0) {
             throw new NotFoundException('Could not find Task.');
         } else {

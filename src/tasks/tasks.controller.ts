@@ -7,11 +7,8 @@ import {
     Param,
     Patch,
     Delete,
-    Query,
-    UseGuards
+    Query
 } from '@nestjs/common';
-
-import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { TasksService } from './services/tasks.service';
 
 @Controller('tasks')
